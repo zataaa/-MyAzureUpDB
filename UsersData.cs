@@ -5,8 +5,8 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace WebApplication1.Models
 {
-    [Table("Users")]
-    public class Users
+    [Table("UsersData")]
+    public class UsersData
     {
         [Key]
         [Column("Id")]
