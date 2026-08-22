@@ -51,13 +51,12 @@ namespace WebApplication1.Data
         public DbSet<TeamAssignments> TeamAssignments { get; set; }
         public DbSet<Teams> Teams { get; set; }
         public DbSet<ThreatAlerts> ThreatAlerts { get; set; }
-        public DbSet<UserTable> UserTable { get; set; }
+        public DbSet<UsersData> UsersData { get; set; } /* */
         public DbSet<UserForecastTable> UserForecastTable { get; set; }
        // لو عندك كلاس اسمه User
-        public DbSet<UserTable> Users { get; set; }
+        public DbSet<UsersData> Users { get; set; } /**/
 
         // لو عندك كلاس اسمه Users (جدول مختلف)
-        public DbSet<Users> UsersTable { get; set;}
         public DbSet<UsersForecast> UsersForecast { get; set; }
         public DbSet<UsersRoles> UsersRoles { get; set; }
         public DbSet<WalletTransactions> WalletTransactions { get; set; }
