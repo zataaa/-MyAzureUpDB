@@ -9,8 +9,8 @@ namespace WebApplication1.Models
     public class UsersData
     {
         [Key]
-        [Column("Id")]
-        public int Id { get; set; }
+        [Column("UsersData")]
+        public int UserID { get; set; }
 
         [Required]
         [MaxLength(200)]
@@ -57,6 +57,9 @@ namespace WebApplication1.Models
         [Column("UpdatedAt")]
         public DateTime? UpdatedAt { get; set; }   // ممكن يكون NULL
 
+        [Column("RoleID")]
+        public int RoleID { get; set; }
 
+        
     }
 }
