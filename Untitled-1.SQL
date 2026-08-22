@@ -2104,10 +2104,10 @@ CREATE TABLE [dbo].[UserGrowth] (
 
 
 -- =============================================
--- Table: [dbo].[Users]
+-- Table: [dbo].[UsersData]
 -- =============================================
-CREATE TABLE [dbo].[Users] (
-    [Id] int NOT NULL,
+CREATE TABLE [dbo].[UsersData] (
+    [UserID] int NOT NULL, -- PK
     [UserName] nvarchar(100) NOT NULL,
     [Email] nvarchar(200) NOT NULL,
     [PasswordHash] nvarchar(200) NOT NULL,
@@ -2121,8 +2121,8 @@ CREATE TABLE [dbo].[Users] (
     [Address] nvarchar(300) NULL,
     [CreatedAt] datetime NULL,
     [UpdatedAt] datetime NULL,
-    [RoleID] int NULL,
-    [UserID] int NULL
+    [RoleID] int NULL
+    
 );
 
 
@@ -2151,13 +2151,17 @@ CREATE TABLE [dbo].[UsersRoles] (
 
 
 -- =============================================
--- Table: [dbo].[UserTable]
+-- Table: [dbo].[Users] /*تم التغيير الي*/
 -- =============================================
-CREATE TABLE [dbo].[UserTable] (
-    [UserID] int NOT NULL,
-    [user_name] nvarchar(100) NOT NULL,
-    [email] nvarchar(200) NOT NULL,
-    [CreatedAT] datetime NOT NULL
+CREATE TABLE [dbo].[Users] (
+    [UserID] int NOT NULL, -- PK
+    [UserName] nvarchar(100) NOT NULL,
+    [Email] nvarchar(200) NOT NULL,
+    [CreatedAT] datetime NOT NULL,
+    PasswordHash NVARCHAR(200) NOT NULL,
+    Status NVARCHAR(50) DEFAULT 'Active',
+    Notes NVARCHAR(MAX) NULL;
+   
 );
 
 
