@@ -1,0 +1,617 @@
+بصفتي مهندس قواعد بيانات (Database Architect)، قمت بإجراء مراجعة شاملة وهندسية لمخطط قاعدة البيانات المقدم (45 جدولاً). المخطط الحالي يعاني من **غياب تام لقيود السلامة المرجعية (Constraints)** مثل `PRIMARY KEY` و`FOREIGN KEY` و`IDENTITY` و`UNIQUE` في كود الإنشاء، بالإضافة إلى تكرارات هيكلية ومشاكل تطبيع (Normalization).
+
+إليك التحليل التفصيلي الشامل لكل جدول، متبوعاً بتقسيم المخطط إلى أنظمة أعمال منطقية (Business Modules).
+
+---
+
+### مراجعة الجداول التفصيلية
+
+#### 1. AuditLogs
+
+* **Primary Key:** `LogID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `LogID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** `ActionBy` معرف كـ `nvarchar(150)` بينما يفترض ربطه بـ `Users(UserID)` كـ `int`.
+* **Missing Foreign Keys:** لا يوجد ربط مرجعي مع `Users` عبر `ActionBy`.
+* **Duplicate/Overlapping:** لا يوجد تكرار مباشر، لكنه يمثل جزءاً من نظام المراجعة والتتبع.
+* **Naming Inconsistencies:** اسم العمود `ActionBy` نوعه غير متناسق مع بقية الجداول التي تستخدم `ActionBy` كـ `int`.
+* **Wrong Data Types:** ينبغي استخدام `datetime2` بدلاً من `datetime` لدقة السجلات الزمنية.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** `ActionDate` يفضل أن يكون `NOT NULL DEFAULT GETDATE()`.
+* **Normalization:** ممتاز كجدول تتبع عام (`EntityName` + `EntityID`).
+
+#### 2. AuthenticationLogs
+
+* **Primary Key:** `LogID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `LogID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** `UserID` (غير معرف كـ FK)
+* **Missing Foreign Keys:** غياب `FOREIGN KEY (UserID) REFERENCES Users(UserID)`.
+* **Duplicate/Overlapping:** يتقاطع وظيفياً مع جدول `UserSessions`.
+* **Naming Inconsistencies:** `LoginTime` مقابل `CreatedAt` في جداول أخرى.
+* **Wrong Data Types:** `IPAddress` ينبغي أن يكون `varchar(45)` لدعم IPv6 وتوفير المساحة.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** `LoginTime` ممتاز `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 3. AvailabilityLogs
+
+* **Primary Key:** `LogID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `LogID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** `RecordID` و `LoggedBy` (غير معرفين كـ FKs)
+* **Missing Foreign Keys:** غياب `FK_AvailabilityLogs_Record` على `RecordID` و `FK_AvailabilityLogs_User` على `LoggedBy`.
+* **Duplicate/Overlapping:** نمط تكراري لنظام سجلات الإدارة (شديد الشبه بـ `CapacityLogs` و `ConfigLogs`).
+* **Naming Inconsistencies:** `LoggedBy` (int) مقابل `ActionBy` (nvarchar/int) في جداول أخرى.
+* **Wrong Data Types:** `datetime` -> `datetime2`.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** `LogDate` يجب أن يكون `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 4. AvailabilityRecords
+
+* **Primary Key:** `RecordID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `RecordID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** `TargetID` (غير معرف كـ FK)
+* **Missing Foreign Keys:** غياب `FK_AvailabilityRecords_Target` على `TargetID`.
+* **Duplicate/Overlapping:** لا يوجد.
+* **Naming Inconsistencies:** `RecordedAt` مقابل `CreatedAt` أو `LogDate`.
+* **Wrong Data Types:** `ActualUptime` بنسبة `decimal(5,2)` سليم للنسب المئوية (00.00% إلى 100.00%).
+* **Missing UNIQUE Constraints:** قد يحتاج `UNIQUE(TargetID, RecordedAt)` لتعقب قراءة واحدة لكل نقطة زمنية.
+* **NULL / NOT NULL:** `Status` و `RecordedAt` ينبغي أن تكون `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 5. AvailabilityTargets
+
+* **Primary Key:** `TargetID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `TargetID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** لا يوجد.
+* **Missing Foreign Keys:** إذا كان `SystemName` يمثل تطبيقاً أو عنصر تهيئة، فيفترض ربطه بـ `ConfigItems(ConfigID)`.
+* **Duplicate/Overlapping:** تكرار نمط جداول الأهداف مع `CapacityTargets`.
+* **Naming Inconsistencies:** متناسق داخلياً.
+* **Wrong Data Types:** `Period` كـ `nvarchar(50)` يفضل تحويله إلى Lookup Table أو قيد `CHECK`.
+* **Missing UNIQUE Constraints:** `UNIQUE(SystemName, Period)`.
+* **NULL / NOT NULL:** `CreatedAt` ينبغي أن يكون `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 6. BigMerchant & 7. BigMerchants (تداخل وصريح!)
+
+* **Primary Key:** `BigMerchantID` في كلا الجدولين (غير معرف كـ PK).
+* **Identity Column:** كلاهما يحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** لا يوجد.
+* **Missing Foreign Keys:** قد يتطلب ربطاً بـ `Users(UserID)` إذا كان للمتجر حساب دخول.
+* **Duplicate/Overlapping:** **جدولان متكرران تماماً!** (`BigMerchant` يحتوي `CompanyName`, `TaxNumber` بينما `BigMerchants` يحتوي `Name`, `StoreName`, `ContactInfo`).
+* **Naming Inconsistencies:** أحدهما بالمفرد والآخر بالجمع.
+* **Wrong Data Types:** التلفون/البيانات المالية غير محددة بدقة.
+* **Missing UNIQUE Constraints:** `TaxNumber` يجب أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** `CreatedAt` ينبغي أن يكون `NOT NULL`.
+* **Normalization:** ينبغي دمج الجدولين في جدول واحد موحد باسم `BigMerchants`.
+
+#### 8. CapacityLogs / 9. CapacityRecords / 10. CapacityTargets
+
+* **Primary Key:** `LogID`, `RecordID`, `TargetID` (غير معرفة كـ PKs).
+* **Identity Column:** جميعها تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `RecordID`, `ActionBy`, `TargetID` بدون روابط FK.
+* **Missing Foreign Keys:**
+* `CapacityLogs.RecordID` -> `CapacityRecords(RecordID)`
+* `CapacityLogs.ActionBy` -> `Users(UserID)`
+* `CapacityRecords.TargetID` -> `CapacityTargets(TargetID)`
+
+
+* **Duplicate/Overlapping:** متطابق في الهيكلية مع مجموعة جداول `Availability`.
+* **Naming Inconsistencies:** `ActionBy` نوعه `int` هنا، لكنه `nvarchar(150)` في `AuditLogs`.
+* **Wrong Data Types:** `TargetUsage` و `ActualUsage` بـ `decimal(10,2)` ممتاز.
+* **Missing UNIQUE Constraints:** `CapacityTargets` يحتاج `UNIQUE(ResourceType, Period)`.
+* **NULL / NOT NULL:** حقول التواريخ والحالات ينبغي ألا تقبل `NULL`.
+* **Normalization:** سليم.
+
+#### 11. CashOnDelivery
+
+* **Primary Key:** `CODID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `CODID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** `PaymentID`, `OrderID` (بدون FK).
+* **Missing Foreign Keys:**
+* `FK_COD_Order` على `OrderID` -> `Orders(OrderID)`
+* `FK_COD_Payment` على `PaymentID` -> `Payments(PaymentID)`
+
+
+* **Duplicate/Overlapping:** يتداخل مع تفاصيل الدفع في `Payments` وجدول `Shipping`.
+* **Naming Inconsistencies:** `DeliveryAddress` متكرر مع عنوان العميل/الشحن.
+* **Wrong Data Types:** `IsPaid` يفضل أن يكون `NOT NULL DEFAULT 0`.
+* **Missing UNIQUE Constraints:** `OrderID` ينبغي أن يكون `UNIQUE` (علاقة 1 إلى 1 مع الطلب).
+* **NULL / NOT NULL:** `OrderID` معرف كـ `NOT NULL` وهو جيد، لكن `PaymentID` يقبل `NULL` وهو ما قد يسبب إرباكاً في التجميع المالي.
+* **Normalization:** يمكن دمج هذه البيانات كـ Sub-type داخل `Payments` بدلاً من جدول منفصل.
+
+#### 12. Categories
+
+* **Primary Key:** `CategoryID` (غير معرف كـ PK)
+* **Identity Column:** يحتاج `CategoryID` إلى `IDENTITY(1,1)`
+* **Foreign Keys:** لا يوجد.
+* **Missing Foreign Keys:** لا يوجد (إلا إذا أردت تصنيفاً شجرياً Hierarchical Category فيلزم `ParentCategoryID`).
+* **Duplicate/Overlapping:** يتداخل في الاسم مع `TicketCategories`.
+* **Naming Inconsistencies:** اسم الجدول عام جداً، يُفضل تسميته `ProductCategories`.
+* **Wrong Data Types:** ممتازة.
+* **Missing UNIQUE Constraints:** `CategoryName` يجب أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** سليمة.
+* **Normalization:** سليم.
+
+#### 13. ChangeApprovals / 14. ChangeLogs / 15. ChangeRequests
+
+* **Primary Key:** `ApprovalID`, `LogID`, `RequestID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `RequestID`, `ApprovedBy`, `RequestedBy`, `ActionBy` غير مربوطة بـ FKs.
+* **Missing Foreign Keys:**
+* `ChangeApprovals.RequestID` -> `ChangeRequests(RequestID)`
+* `ChangeApprovals.ApprovedBy` -> `Users(UserID)`
+* `ChangeLogs.RequestID` -> `ChangeRequests(RequestID)`
+* `ChangeLogs.ActionBy` -> `Users(UserID)`
+* `ChangeRequests.RequestedBy` -> `Users(UserID)`
+
+
+* **Duplicate/Overlapping:** دورة عمل قياسية لنظام إدارة التغيير (Change Management).
+* **Naming Inconsistencies:** متناسق.
+* **Wrong Data Types:** ممتازة.
+* **Missing UNIQUE Constraints:** `ChangeApprovals` قد يحتاج `UNIQUE(RequestID, ApprovedBy)`.
+* **NULL / NOT NULL:** `ApprovedAt`, `RequestedAt` يجب أن تكون `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 16. ConfigChanges / 17. ConfigItems / 18. ConfigLogs
+
+* **Primary Key:** `ChangeID`, `ConfigID`, `LogID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ConfigID`, `ChangedBy`, `ActionBy` (بدون FK).
+* **Missing Foreign Keys:**
+* `ConfigChanges.ConfigID` -> `ConfigItems(ConfigID)`
+* `ConfigChanges.ChangedBy` -> `Users(UserID)`
+* `ConfigLogs.ConfigID` -> `ConfigItems(ConfigID)`
+* `ConfigLogs.ActionBy` -> `Users(UserID)`
+
+
+* **Duplicate/Overlapping:** **تكرار وظيفي بين `ConfigChanges` و `ConfigLogs`!** كلاهما يسجل التغييرات والمنفذ والتاريخ.
+* **Naming Inconsistencies:** `Owner` في `ConfigItems` معرف كـ `nvarchar(150)` بينما يفضل ربطه بـ `Users(UserID)` كـ `int`.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** `ItemName` ينبغي أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** تواريخ التعديل يجب أن تكون `NOT NULL`.
+* **Normalization:** يُفضل دمج `ConfigChanges` و `ConfigLogs` في جدول تتبع واحد.
+
+#### 19. ContinuityLogs / 20. ContinuityPlans / 21. ContinuityTests
+
+* **Primary Key:** `LogID`, `PlanID`, `TestID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `PlanID` بدون FKs.
+* **Missing Foreign Keys:**
+* `ContinuityLogs.PlanID` -> `ContinuityPlans(PlanID)`
+* `ContinuityTests.PlanID` -> `ContinuityPlans(PlanID)`
+
+
+* **Duplicate/Overlapping:** هيكلية نمطية لإدارة استمرارية الأعمال (BCP).
+* **Naming Inconsistencies:** `ActionBy` و `TestedBy` و `Owner` كلها معرفة كـ `nvarchar(150)` بدلاً من المرجعية لجدول `Users(UserID)`.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** التواريخ يفضل `NOT NULL`.
+* **Normalization:** ممتاز، لكن يعيبه استخدام النصوص لأسماء الأشخاص بدلاً من الترقيم المرجعي.
+
+#### 22. CustomerProfile & 23. Customers
+
+* **Primary Key:** `ProfileID`, `CustomerID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `CustomerProfile.UserID` (بدون FK).
+* **Missing Foreign Keys:**
+* `CustomerProfile.UserID` -> `Users(UserID)`
+* `Orders.CustomerID` يعتمد على `Customers` ولكن لا توجد أي FKs بين `Customers` و `Users` أو `CustomerProfile`!
+
+
+* **Duplicate/Overlapping:** **تداخل خطير وتكرار!** هناك جدول `Users` وجدول `UsersData` وجدول `Customers` وجدول `CustomerProfile`. البيانات الديموغرافية (السن، الجنس، المنطقة) مكررة في `Users` و `CustomerProfile`.
+* **Naming Inconsistencies:** تشتت بيانات العميل بين 4 جداول مختلفة.
+* **Wrong Data Types:** `Gender`, `Age`, `Region` موجودة بخصائص مختلفة في أكثر من جدول.
+* **Missing UNIQUE Constraints:** `CustomerProfile.UserID` يجب أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** بيانات التواصل في `Customers` تقبل `NULL`.
+* **Normalization:** **خلل جسيم في التطبيع (1NF & 2NF)**. يجب توحيد بيانات المستخدمين والعملاء.
+
+#### 24. DigitalWallets & 45. WalletTransactions
+
+* **Primary Key:** `WalletID`, `TransactionID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `DigitalWallets.UserID`, `WalletTransactions.WalletID` (بدون FKs).
+* **Missing Foreign Keys:**
+* `DigitalWallets.UserID` -> `Users(UserID)`
+* `WalletTransactions.WalletID` -> `DigitalWallets(WalletID)`
+
+
+* **Duplicate/Overlapping:** سليم كـ Sub-system مالي.
+* **Naming Inconsistencies:** متناسق.
+* **Wrong Data Types:** `Balance` و `Amount` بـ `decimal(15,2)` ممتازة للمحفظة.
+* **Missing UNIQUE Constraints:** `DigitalWallets.UserID` يجب أن يكون `UNIQUE` (محفظة واحدة لكل مستخدم).
+* **NULL / NOT NULL:** `Balance` يجب أن يكون `NOT NULL DEFAULT 0.00`.
+* **Normalization:** ممتاز.
+
+#### 25. ForecastingHistory & 26. ForecastingReports
+
+* **Primary Key:** `HistoryID`, `ForecastID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `HistoryID.ForecastID`, `ForecastingReports.ProductID` (بدون FKs).
+* **Missing Foreign Keys:**
+* `ForecastingHistory.ForecastID` -> `ForecastingReports(ForecastID)`
+* `ForecastingReports.ProductID` -> `Products(ProductID)`
+
+
+* **Duplicate/Overlapping:** لا يوجد.
+* **Naming Inconsistencies:** متناسق.
+* **Wrong Data Types:** `ExpectedValue` و `ActualValue` بـ `decimal(18,2)` ممتاز.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** التواريخ معرفة بشكل جيد كـ `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 27. IncidentReports & 28. IncidentTypes
+
+* **Primary Key:** `IncidentID`, `TypeID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `TypeID`, `ReportedBy`, `AssignedTo` (بدون FKs).
+* **Missing Foreign Keys:**
+* `IncidentReports.TypeID` -> `IncidentTypes(TypeID)`
+* `IncidentReports.ReportedBy` -> `Users(UserID)`
+* `IncidentReports.AssignedTo` -> `Users(UserID)`
+
+
+* **Duplicate/Overlapping:** يتشابه وظيفياً مع نظام `SupportTickets` ولكن بمسمى مختلف (ITIL Incident Management).
+* **Naming Inconsistencies:** متناسق.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** `IncidentTypes.TypeName` يجب أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** `ReportedAt` يجب أن يكون `NOT NULL`.
+* **Normalization:** ممتاز.
+
+#### 29. Invoices
+
+* **Primary Key:** `InvoiceID` (غير معرف كـ PK).
+* **Identity Column:** يحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `OrderID` (بدون FK).
+* **Missing Foreign Keys:** `FK_Invoices_Orders` على `OrderID` -> `Orders(OrderID)`.
+* **Duplicate/Overlapping:** جزء من الدورة المالية للطلب.
+* **Naming Inconsistencies:** سليم.
+* **Wrong Data Types:** `Amount` بـ `decimal(18,2)` ممتاز.
+* **Missing UNIQUE Constraints:** `InvoiceNumber` و `OrderID` يجب أن يكونا `UNIQUE`.
+* **NULL / NOT NULL:** `IssueDate` يجب أن يكون `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 30. Ledger
+
+* **Primary Key:** `LedgerID` (غير معرف كـ PK).
+* **Identity Column:** يحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ReferenceID` يُستخدم كـ Polymorphic Key (قد يشير لإيقاع طلب، فاتورة، أو دفعة).
+* **Missing Foreign Keys:** غياب العلاقات المباشرة بسبب استخدام `ReferenceID` غير المباشر.
+* **Duplicate/Overlapping:** لا يوجد (جدول دفتر الأستاذ العام).
+* **Naming Inconsistencies:** `DebitCredit` يفضل استبداله بـ Enum أو قيود `CHECK ('DEBIT', 'CREDIT')`.
+* **Wrong Data Types:** `DebitCredit` ينبغي أن يكون `varchar(6)`.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** `TransactionDate` ينبغي أن يكون `NOT NULL`.
+* **Normalization:** مقبول تصميمياً للجداول المحاسبية العامة (General Ledger).
+
+#### 31. MerchantProducts & 39. SmallMerchantProducts
+
+* **Primary Key:** `MerchantProductID`, `SmallMerchantProductID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ProductID`, `MerchantID`, `SmallMerchantID` (بدون FKs).
+* **Missing Foreign Keys:**
+* `MerchantProducts.ProductID` -> `Products(ProductID)`
+* `MerchantProducts.MerchantID` -> `BigMerchants(BigMerchantID)`
+* `SmallMerchantProducts.SmallMerchantID` -> `SmallMerchants(SmallMerchantID)`
+* `SmallMerchantProducts.ProductID` -> `Products(ProductID)`
+
+
+* **Duplicate/Overlapping:** **تكرار منطقي وتصميمي!** تكرار جداول ربط التجار بالمنتجات بشكل منفصل للتجار الكبار والتجار الصغار.
+* **Naming Inconsistencies:** `StockQuantity` في الأول مقابل `VisibleStock` في الثاني.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** `UNIQUE(MerchantID, ProductID)` لكل منهما.
+* **NULL / NOT NULL:** `StockQuantity` ينبغي أن يكون `NOT NULL DEFAULT 0`.
+* **Normalization:** يفضل دمج التجار في هيكل موحد (Polymorphic أو Inheritance) وتوحيد جدول ربط المنتجات.
+
+#### 32. OrderDetails & 33. Orders
+
+* **Primary Key:** `OrderDetailID`, `OrderID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `OrderID`, `SmallMerchantProductID`, `CustomerID`, `SmallMerchantID` (بدون FKs).
+* **Missing Foreign Keys:**
+* `OrderDetails.OrderID` -> `Orders(OrderID)`
+* `OrderDetails.SmallMerchantProductID` -> `SmallMerchantProducts(SmallMerchantProductID)` (وهذا يمنع الشراء المباشر من `MerchantProducts` للتجار الكبار!).
+* `Orders.CustomerID` -> `Customers(CustomerID)`
+* `Orders.SmallMerchantID` -> `SmallMerchants(SmallMerchantID)`
+
+
+* **Duplicate/Overlapping:** حقل `Subtotal` في `OrderDetails` هو حقل مشتق (Computed Column: `Quantity * Price`).
+* **Naming Inconsistencies:** تقييد التفاصيل بـ `SmallMerchantProductID` يربط الطلبات فقط بالتجار الصغار وتجاهل التجار الكبار!
+* **Wrong Data Types:** `Subtotal` نوعه `decimal(29,2)` وهو زائد عن الحاجة، يكفي `decimal(18,2)`.
+* **Missing UNIQUE Constraints:** `OrderDetails` يحتاج `UNIQUE(OrderID, SmallMerchantProductID)`.
+* **NULL / NOT NULL:** `TotalAmount` سليم `NOT NULL`.
+* **Normalization:** خلل في التصميم الشامل لربط المنتجات بالتجار الكبار/الصغار داخل الطلب.
+
+#### 34. Payments & 36. Refunds & 41. Taxes
+
+* **Primary Key:** `PaymentID`, `RefundID`, `TaxID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `OrderID`, `PaymentID`, `MerchantID` (بدون FKs).
+* **Missing Foreign Keys:**
+* `Payments.OrderID` -> `Orders(OrderID)`
+* `Refunds.PaymentID` -> `Payments(PaymentID)`
+* `Taxes.OrderID` -> `Orders(OrderID)`
+
+
+* **Duplicate/Overlapping:** مكملات الدورة المالية للطلب.
+* **Naming Inconsistencies:** `MerchantType` يتطلب قيد `CHECK`.
+* **Wrong Data Types:** `TaxRate` بـ `decimal(5,2)` ممتازة.
+* **Missing UNIQUE Constraints:** `Taxes` قد يحتاج `UNIQUE(OrderID)`.
+* **NULL / NOT NULL:** `PaymentDate`, `RefundDate` يجب أن تكون `NOT NULL`.
+* **Normalization:** ممتاز.
+
+#### 35. ProblemCatalog / 37. ProblemLogs / 38. ProblemRecords
+
+* **Primary Key:** `ProblemID`, `LogID`, `RecordID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ProblemID`, `RelatedIncidentID`, `CreatedBy`, `LoggedBy`, `ActionBy` (بدون FKs).
+* **Missing Foreign Keys:**
+* `ProblemLogs.ProblemID` -> `ProblemCatalog(ProblemID)`
+* `ProblemRecords.ProblemID` -> `ProblemCatalog(ProblemID)`
+* `ProblemRecords.RelatedIncidentID` -> `IncidentReports(IncidentID)`
+* جميع حقول المستخدمين (`CreatedBy`, `LoggedBy`, `ActionBy`) -> `Users(UserID)`.
+
+
+* **Duplicate/Overlapping:** دورة عمل قياسية لإدارة المشاكل (ITIL Problem Management).
+* **Naming Inconsistencies:** متناسق داخلياً.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** التواريخ وصناع القرار ينبغي ألا يقبلوا `NULL`.
+* **Normalization:** ممتاز.
+
+#### 40. ProductImages & 30. Products
+
+* **Primary Key:** `ImageID`, `ProductID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ProductImages.ProductID`, `Products.BigMerchantID`, `Products.CategoryID` (بدون FKs).
+* **Missing Foreign Keys:**
+* `ProductImages.ProductID` -> `Products(ProductID)`
+* `Products.BigMerchantID` -> `BigMerchants(BigMerchantID)` (وهنا ربط المنتج بالتأجر الكبير فقط مجدداً!).
+* `Products.CategoryID` -> `Categories(CategoryID)`
+
+
+* **Duplicate/Overlapping:** يوجد حقل `StockQuantity` في `Products` وحقل آخر بنفس الاسم في `MerchantProducts`.
+* **Naming Inconsistencies:** ربط المنتج المباشر بـ `BigMerchantID` يتناقض مع وجود جدول `MerchantProducts` وجدول `SmallMerchantProducts`.
+* **Wrong Data Types:** `Description` بـ `nvarchar(MAX)` في `Products` ممتاز.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** `Price` سليم `NOT NULL`.
+* **Normalization:** يوجد تضارب في تحديد مالك المنتج (هل المنتج يتبع متجراً كبيراً كأصل، أم يُباع عبر وسائط تجار؟).
+
+#### 42. ReleaseDeployments / 43. ReleaseLogs / 44. Releases
+
+* **Primary Key:** `DeploymentID`, `LogID`, `ReleaseID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ReleaseID` بدون FKs.
+* **Missing Foreign Keys:**
+* `ReleaseDeployments.ReleaseID` -> `Releases(ReleaseID)`
+* `ReleaseLogs.ReleaseID` -> `Releases(ReleaseID)`
+
+
+* **Duplicate/Overlapping:** إدارة الإدارات والنسخ البرمجية (ITIL Release Management).
+* **Naming Inconsistencies:** `DeployedBy`, `ReleaseManager`, `ActionBy` معرفة كـ `nvarchar(150)` بدلاً من ربطها بـ `Users(UserID)`.
+* **Wrong Data Types:** `PlannedDate` نوعه `date` ممتاز.
+* **Missing UNIQUE Constraints:** لا يوجد.
+* **NULL / NOT NULL:** التواريخ والمسؤولين يجب أن تقبل قيم موجبة فقط.
+* **Normalization:** سليم.
+
+#### 45. Reports / ReportLogs / ReportRuns
+
+* **Primary Key:** `ReportID`, `LogID`, `RunID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `ReportID`, `CreatedBy`, `GeneratedBy` (بدون FKs).
+* **Missing Foreign Keys:**
+* `ReportLogs.ReportID` -> `Reports(ReportID)`
+* `ReportRuns.ReportID` -> `Reports(ReportID)`
+* `Reports.CreatedBy` -> `Users(UserID)`
+* `ReportRuns.GeneratedBy` -> `Users(UserID)`
+
+
+* **Duplicate/Overlapping:** نظام التقارير والتشغيل.
+* **Naming Inconsistencies:** متناسق.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** `ReportName` يفضل أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** `ActionDate`, `RunDate` ينبغي أن تكون `NOT NULL`.
+* **Normalization:** سليم.
+
+#### 46. Roles / Users / UsersData / UserSessions / UsersRoles
+
+* **Primary Key:** `RoleID`, `UserID`, `SessionID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `Users.RoleID`, `UsersData.UserID`, `UserSessions.UserID`, `UsersRoles.(UserID, RoleID)` (بدون FKs).
+* **Missing Foreign Keys:**
+* `UsersRoles.UserID` -> `Users(UserID)`
+* `UsersRoles.RoleID` -> `Roles(RoleID)`
+* `UserSessions.UserID` -> `Users(UserID)`
+* `UsersData.UserID` -> `Users(UserID)`
+
+
+* **Duplicate/Overlapping:** **أكبر تضارب ومخالفة لقواعد التطبيع في المخطط!**
+* توجد علاقة (1 to Many) عبر `Users.RoleID` وتوجد علاقة (Many to Many) عبر `UsersRoles` في نفس الوقت!
+* بيانات `UserName`, `Email`, `PasswordHash`, `RoleID` مكررة بالحرف في `Users` و `UsersData`.
+
+
+* **Naming Inconsistencies:** أسماء الجداول تتداخل بين المفرد والجمع والمحتوى المكرر.
+* **Wrong Data Types:** `PasswordHash` بـ `nvarchar(200)` ممتاز.
+* **Missing UNIQUE Constraints:** `Email` و `UserName` يجب أن يكونا `UNIQUE`.
+* **NULL / NOT NULL:** `Email` و `PasswordHash` يجب ألا تقبل `NULL`.
+* **Normalization:** **انتهاك صارخ لـ 3NF**. يجب التخلص من `UsersData` وتضمينه في `Users` أو حذفه، واعتماد إما `RoleID` مباشر أو `UsersRoles` للجميع.
+
+#### 47. SupportTickets / TicketCategories / TicketLogs
+
+* **Primary Key:** `TicketID`, `CategoryID`, `LogID` (غير معرفة).
+* **Identity Column:** تحتاج `IDENTITY(1,1)`.
+* **Foreign Keys:** `CategoryID`, `OpenedBy`, `AssignedTo`, `TicketID`, `ActionBy` (بدون FKs).
+* **Missing Foreign Keys:**
+* `SupportTickets.CategoryID` -> `TicketCategories(CategoryID)`
+* `SupportTickets.OpenedBy` -> `Users(UserID)`
+* `SupportTickets.AssignedTo` -> `Users(UserID)`
+* `TicketLogs.TicketID` -> `SupportTickets(TicketID)`
+* `TicketLogs.ActionBy` -> `Users(UserID)`
+
+
+* **Duplicate/Overlapping:** نظام تذاكر الدعم الفني.
+* **Naming Inconsistencies:** متناسق داخلياً.
+* **Wrong Data Types:** سليم.
+* **Missing UNIQUE Constraints:** `TicketCategories.CategoryName` يجب أن يكون `UNIQUE`.
+* **NULL / NOT NULL:** `OpenedAt` يجب أن يكون `NOT NULL`.
+* **Normalization:** ممتاز.
+
+---
+
+### تقسيم الجداول إلى أنظمة أعمال منطقية (Business Modules)
+
+تم تقسيم الجداول الـ 45 إلى **7 أنظمة فرعية (Sub-systems/Modules)** مستقلة وواضحة لمساعدة فريق العمل على تنظيم الصلاحيات وإعادة بناء وتطوير المخطط:
+
+```
+                          ┌─────────────────────────────────────────┐
+                          │         CORE SYSTEM & IDENTITY          │
+                          │ Users, Roles, UsersRoles, Sessions, Logs│
+                          └────────────────────┬────────────────────┘
+                                               │
+      ┌───────────────────────┬────────────────┼───────────────────────┬───────────────────────┐
+      ▼                       ▼                ▼                       ▼                       ▼
+┌───────────┐           ┌───────────┐    ┌───────────┐           ┌───────────┐           ┌───────────┐
+│ E-COMMERCE│           │ FINANCIAL │    │ ITIL SERVICE          │ FORECASTING           │ AUDIT &   │
+│ MERCHANTS │           │ & PAYMENTS│    │ MANAGEMENT│           │ & REPORTING           │ LOGGING   │
+└───────────┘           └───────────┘    └───────────┘           └───────────┘           └───────────┘
+
+```
+
+#### 1. نظام إدارة المستخدمين والصلاحيات (Identity & Access Management - IAM)
+
+يختص بالحسابات، الجلسات، الأدوار، وبيانات العملاء:
+
+* `Users`
+* `UsersData` *(يُنصح بدمجه في Users)*
+* `Roles`
+* `UsersRoles`
+* `UserSessions`
+* `AuthenticationLogs`
+* `Customers` *(يُنصح بدمجه أو ربطه فوريًا)*
+* `CustomerProfile`
+
+#### 2. نظام التجارة الإلكترونية والمنتجات (E-Commerce & Catalog Module)
+
+يختص بالكتالوج والمتاجر والطلبات:
+
+* `Categories`
+* `Products`
+* `ProductImages`
+* `BigMerchant` & `BigMerchants` *(يُنصح بالدمج)*
+* `SmallMerchant` & `SmallMerchants` *(يُنصح بالدمج)*
+* `MerchantProducts`
+* `SmallMerchantProducts`
+* `Orders`
+* `OrderDetails`
+* `Shipping`
+
+#### 3. نظام المعاملات المالية والمحفظة (Financial & Payments Module)
+
+يختص بالمدفوعات، الفواتير، المحفظة الإلكترونية، والضرائب:
+
+* `Payments`
+* `CashOnDelivery`
+* `Invoices`
+* `Refunds`
+* `Taxes`
+* `Ledger`
+* `DigitalWallets`
+* `WalletTransactions`
+
+#### 4. نظام إدارة خدمات تقنية المعلومات (ITIL Service Management Module)
+
+يختص بالحوادث، المشاكل، الدعم الفني، والتغييرات:
+
+* `IncidentReports` / `IncidentTypes`
+* `ProblemCatalog` / `ProblemLogs` / `ProblemRecords`
+* `SupportTickets` / `TicketCategories` / `TicketLogs`
+* `ChangeRequests` / `ChangeApprovals` / `ChangeLogs`
+
+#### 5. نظام التشغيل واستمرارية العمليات (IT Operations & BCP Module)
+
+يختص بإدارات الإطلاق، الجاهزية، السعة، وخطط الاستمرارية:
+
+* `ConfigItems` / `ConfigChanges` / `ConfigLogs`
+* `Releases` / `ReleaseDeployments` / `ReleaseLogs`
+* `AvailabilityTargets` / `AvailabilityRecords` / `AvailabilityLogs`
+* `CapacityTargets` / `CapacityRecords` / `CapacityLogs`
+* `ContinuityPlans` / `ContinuityTests` / `ContinuityLogs`
+
+#### 6. نظام التنبؤ والتقارير (Forecasting & Reporting Module)
+
+يختص بالتحليلات والتنبؤات وإصدار التقارير:
+
+* `Reports`
+* `ReportRuns`
+* `ReportLogs`
+* `ForecastingReports`
+* `ForecastingHistory`
+
+استكمالاً للتحليل الهندسي الشامل لمخطط قاعدة البيانات، وسيراً على نفس النهج المتبع في تقديم تحليل دقيق ومفصل لكل جدول على حدة دون حذف أي جدول أو إنشاء جداول جديدة، إليك مراجعة **نظام التدقيق العام (Global Audit System)** وما يتبعه من تفاصيل هيكلية وتوصيات تقنية:
+
+---
+
+### مراجعة جداول نظام التدقيق والتتبع العام (Global Audit System)
+
+يمثل هذا النظام عصب الحوكمة والرقابة (Governance & Traceability) في قاعدة البيانات. ورغم أهميته التشغيلية، إلا أن التحليل يظهر غياباً كاملاً لآليات الربط المرجعي والقيود الذاتية.
+
+#### 1. AuditLogs (سجل التدقيق الشامل)
+
+* **Primary Key:** `LogID` غير محدد كـ PK.
+* **Identity Column:** يفتقر إلى خاصية الترقيم التلقائي `IDENTITY(1,1)`.
+* **Foreign Keys:** لا يوجد.
+* **Missing Foreign Keys:**
+* `ActionBy` معرف كـ `nvarchar(150)` بينما يفترض ربطه مرجعياً بـ `Users(UserID)` كـ `int`.
+
+
+* **Duplicate or Overlapping Tables:** يتداخل في المفهوم مع `ConfigLogs` و`ChangeLogs`؛ حيث يُستخدم كـ Polymorphic Audit Table (تتبع عبر `EntityName` + `EntityID`) في حين صُممت الجداول الأخرى لتتبع كيانات محددة.
+* **Naming Inconsistencies:** استخدام نص اسم المستخدم في `ActionBy` يختلف عن باقي جداول النظام التي تستخدم معرف المعامل `ActionBy` كـ `int`.
+* **Wrong Data Types:**
+* `ActionDate` معرف كـ `datetime`؛ والأفضل هو `datetime2(7)` لضمان الدقة الزمانية المتناهية في أجزاء الثانية.
+* `Notes` بـ `nvarchar(250)` قد لا يتسع لبيانات التغيير التفصيلية (Old/New Values)، يُفضل توسيعه إلى `nvarchar(max)` أو `json`.
+
+
+* **Missing UNIQUE Constraints:** لا يوجد (طبيعي لسجلات التتبع).
+* **NULL / NOT NULL Problems:** `ActionDate` يقبل `NULL` وهو خطأ تصميمي في سجل تدقيق؛ يجب أن يكون `NOT NULL DEFAULT GETDATE()`.
+* **Potential Normalization Problems:** لا توجد مشكلة تطبيع مباشرة لكونه جدول سجلات غير مقترن (Event Log Pattern)، لكن استخدام النص لـ `ActionBy` يضعف سلامة البيانات.
+
+---
+
+### مقارنة هندسية بين جداول السجلات (Logs Architecture Breakdown)
+
+بما أن المخطط يحتوي على **13 جدول سجلات مختلفاً** (Logs)، نورد أدناه مقارنة هيكلية تبرز نقاط الخلل والتضارب بينها ضمن هذا النظام:
+
+| اسم الجدول | المفتاح الرئيسي (PK) | الربط المرجعي (FK) | نوع حقل المنفذ (ActionBy) | القبول لـ NULL في التاريخ |
+| --- | --- | --- | --- | --- |
+| **AuditLogs** | غير معرف (`int`) | لا يوجد | `nvarchar(150)` | نعم (`NULL`) |
+| **AuthenticationLogs** | غير معرف (`int`) | لا يوجد `UserID` | غير موجود | لا (`NOT NULL`) |
+| **AvailabilityLogs** | غير معرف (`int`) | لا يوجد `RecordID`, `LoggedBy` | `LoggedBy int` | نعم (`NULL`) |
+| **CapacityLogs** | غير معرف (`int`) | لا يوجد `RecordID`, `ActionBy` | `ActionBy int` | نعم (`NULL`) |
+| **ChangeLogs** | غير معرف (`int`) | لا يوجد `RequestID`, `ActionBy` | `ActionBy int` | نعم (`NULL`) |
+| **ConfigChanges** | غير معرف (`int`) | لا يوجد `ConfigID`, `ChangedBy` | `ChangedBy int` | نعم (`NULL`) |
+| **ConfigLogs** | غير معرف (`int`) | لا يوجد `ConfigID`, `ActionBy` | `ActionBy int` | نعم (`NULL`) |
+| **ContinuityLogs** | غير معرف (`int`) | لا يوجد `PlanID` | `ActionBy nvarchar(150)` | نعم (`NULL`) |
+| **ProblemLogs** | غير معرف (`int`) | لا يوجد `ProblemID`, `LoggedBy` | `LoggedBy int` | نعم (`NULL`) |
+| **ReleaseLogs** | غير معرف (`int`) | لا يوجد `ReleaseID` | `ActionBy nvarchar(150)` | نعم (`NULL`) |
+| **ReportLogs** | غير معرف (`int`) | لا يوجد `ReportID` | غير موجود | نعم (`NULL`) |
+| **TicketLogs** | غير معرف (`int`) | لا يوجد `TicketID`, `ActionBy` | `ActionBy int` | نعم (`NULL`) |
+
+---
+
+### خلاصة التوصيات الهندسية لإصلاح المخطط بالكامل (Architectural Summary)
+
+بناءً على تحليل الـ 45 جدولاً المكونة لهذا المخطط، نلخص أهم المحاور التي يتوجب معالجتها عند البدء في كتابة الاستعلامات النصية لاحقاً:
+
+1. **إعادة بناء سلامة البيانات (Data Integrity Framework):**
+* إضافات كافة القيود الأساسية المفارقة: `PRIMARY KEY (ID)` و `IDENTITY(1,1)` لكل الجداول بدون استثناء.
+* إنشاء كافة روابط المفاتيح الأجنبية (`FOREIGN KEY`) المفودة لضمان عدم وجود بيانات يتيمة (Orphan Records).
+
+
+2. **معالجة التكرارات الهيكلية الصريحة (Deduplication):**
+* دمج `BigMerchant` مع `BigMerchants`.
+* دمج `SmallMerchant` مع `SmallMerchants`.
+* توحيد جداول المستخدمين والملفات الشخصية (`Users`, `UsersData`, `Customers`, `CustomerProfile`).
+
+
+3. **توحيد نمط تسميات ونوع بيانات المنفذين (Audit Columns Standardization):**
+* اعتماد `ActionBy int NOT NULL` وربطه بـ `Users(UserID)` في جميع جداول السجلات وتجاوز التخزين النصي `nvarchar(150)`.
+* تعيين كافة حقول التواريخ الخاصة بالسجلات إلى `datetime2` ومنع قيم `NULL` فيها.
