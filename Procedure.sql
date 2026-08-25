@@ -1,3 +1,4 @@
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddBigMerchant]
 -- =============================================
@@ -15,13 +16,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddConfigItem]
 -- =============================================
-
-
-
-
 CREATE PROCEDURE AddConfigItem
     @ItemName NVARCHAR(150),
     @ItemType NVARCHAR(100),
@@ -33,33 +31,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddIncident]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
 
 
 CREATE PROCEDURE AddIncident
@@ -71,26 +46,13 @@ AS
 BEGIN
     INSERT INTO IncidentReports (Title, Description, TypeID, ReportedBy)
     VALUES (@Title, @Description, @TypeID, @ReportedBy);
-END;
-
-  
+END; 
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[AddMerchantProduct]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-
-
-
-
 
 CREATE PROCEDURE AddMerchantProduct
     @ProductID INT,
@@ -103,6 +65,7 @@ BEGIN
     VALUES (@ProductID, @MerchantID, @StockQuantity, @SaleType);
 END;
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[AddProblem]
@@ -121,17 +84,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddProduct]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
 
 CREATE PROCEDURE AddProduct
     @ProductName NVARCHAR(200),
@@ -147,16 +103,10 @@ END;
 
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddRelease]
 -- =============================================
-
-
-
-
-
-
-
 
 CREATE PROCEDURE AddRelease
     @ReleaseName NVARCHAR(150),
@@ -170,16 +120,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddRole]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
 
 CREATE PROCEDURE AddRole
     @RoleName NVARCHAR(100),
@@ -191,16 +135,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddRoleToUser]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
 
 CREATE PROCEDURE AddRoleToUser
     @UserID INT,
@@ -211,6 +149,7 @@ BEGIN
     VALUES (@UserID, @RoleID);
 END;
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[AddSmallMerchant]
@@ -229,24 +168,11 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AddUser]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-    
     CREATE PROCEDURE AddUser
     @UserName NVARCHAR(100),
     @Email NVARCHAR(200),
@@ -259,36 +185,11 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[ApproveChangeRequest]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
-
- 
  CREATE PROCEDURE ApproveChangeRequest
     @RequestID INT,
     @ApprovedBy INT,
@@ -309,6 +210,7 @@ END;
 
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AssignRoleToUser]
 -- =============================================
@@ -326,26 +228,11 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[AssignUserRole]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
    CREATE PROCEDURE AssignUserRole
     @UserID INT,
     @RoleID INT
@@ -360,26 +247,11 @@ END;
 
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[ChangeUserStatus]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE AddProduct;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
 
    CREATE PROCEDURE ChangeUserStatus
     @UserID INT,
@@ -392,33 +264,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[CloseTicket]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
 
 
   CREATE PROCEDURE CloseTicket
@@ -438,26 +287,11 @@ END;
  
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[CompareForecastWithActuals]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
    CREATE PROCEDURE CompareForecastWithActuals
     @ForecastID INT,
     @ActualValue DECIMAL(18,2)
@@ -493,24 +327,13 @@ BEGIN
             WHEN @ExpectedValue = 0 THEN 0
             ELSE ROUND(((@ActualValue / @ExpectedValue) * 100), 2)
         END AS AccuracyPercentage;
-END;
-
-  
-
-   
-   
+END; 
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[CreateOrder]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
 
 CREATE PROCEDURE CreateOrder
     @UserID INT,
@@ -522,21 +345,66 @@ BEGIN
 END;
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[Delete_Order]
+-- =============================================
+CREATE   PROCEDURE Delete_Order
+    @OrderID INT
+AS
+BEGIN
+    DELETE FROM Orders WHERE OrderID = @OrderID;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[Delete_Payment]
+-- =============================================
+
+
+
+CREATE   PROCEDURE Delete_Payment
+    @PaymentID INT
+AS
+BEGIN
+    DELETE FROM Payments WHERE PaymentID = @PaymentID;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[Delete_User]
+-- =============================================
+
+
+
+CREATE   PROCEDURE Delete_User
+    @UserID INT
+AS
+BEGIN
+    DELETE FROM Users WHERE UserID = @UserID;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[DeleteAuditLog]
+-- =============================================
+
+
+CREATE   PROCEDURE DeleteAuditLog
+    @LogID INT
+AS
+BEGIN
+    DELETE FROM AuditLogs WHERE LogID = @LogID;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[DeleteProduct]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-
-
-
-
 
 CREATE PROCEDURE DeleteProduct
     @ProductID INT
@@ -556,16 +424,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[DeleteRole]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
 
 CREATE PROCEDURE DeleteRole
     @RoleID INT
@@ -581,26 +443,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[DeleteUser]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
 
    CREATE PROCEDURE DeleteUser
     @UserID INT
@@ -611,16 +457,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[DeployRelease]
 -- =============================================
-
-
-
-
-
-
-
 
 CREATE PROCEDURE DeployRelease
     @ReleaseID INT,
@@ -638,28 +478,11 @@ END;
 
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GenerateSalesForecast]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-   
+ 
    CREATE PROCEDURE GenerateSalesForecast
     @ProductID INT = NULL,              -- لو التوقع مرتبط بمنتج معين
     @ForecastType NVARCHAR(100),        -- Sales, Demand, Resource
@@ -689,13 +512,329 @@ END;
    
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAllEntitiesLedgerSummary]
+-- =============================================
+CREATE   PROCEDURE GetAllEntitiesLedgerSummary
+AS
+BEGIN
+    -- ملخص مالي للكيانات
+    SELECT 
+        'User' AS EntityType,
+        u.UserID AS EntityID,
+        u.UserName AS EntityName,
+        YEAR(l.TransactionDate) AS Year,
+        DATEPART(QUARTER, l.TransactionDate) AS Quarter,
+        SUM(CASE WHEN l.DebitCredit = 'Debit' THEN l.Amount ELSE 0 END) AS TotalDebits,
+        SUM(CASE WHEN l.DebitCredit = 'Credit' THEN l.Amount ELSE 0 END) AS TotalCredits,
+        SUM(l.Amount) AS NetAmount
+    FROM Users u
+    INNER JOIN Orders o ON u.UserID = o.CustomerID
+    INNER JOIN Payments p ON o.OrderID = p.OrderID
+    INNER JOIN Ledger l ON l.ReferenceID = p.PaymentID AND l.TransactionType = 'Payment'
+    GROUP BY u.UserID, u.UserName, YEAR(l.TransactionDate), DATEPART(QUARTER, l.TransactionDate)
+
+    UNION ALL
+
+    -- ملخص سجلات التدقيق
+    SELECT 
+        'AuditLog' AS EntityType,
+        a.EntityID,
+        a.EntityName,
+        YEAR(a.ActionDate) AS Year,
+        DATEPART(QUARTER, a.ActionDate) AS Quarter,
+        COUNT(a.LogID) AS TotalDebits,   -- هنا بنستخدم Count كعدد عمليات
+        0 AS TotalCredits,               -- مش محتاجين Credits في التدقيق
+        COUNT(a.LogID) AS NetAmount      -- عدد العمليات كـ NetAmount
+    FROM AuditLogs a
+    GROUP BY a.EntityID, a.EntityName, YEAR(a.ActionDate), DATEPART(QUARTER, a.ActionDate);
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAllEntitiesLedgerSummaryPivot]
+-- =============================================
+CREATE   PROCEDURE GetAllEntitiesLedgerSummaryPivot
+AS
+BEGIN
+    ;WITH EntityLedger AS (
+        SELECT 
+            CASE 
+                WHEN u.UserID IS NOT NULL THEN 'User'
+                WHEN r.RoleID IS NOT NULL THEN 'Role'
+                WHEN sm.SmallMerchantID IS NOT NULL THEN 'SmallMerchant'
+                WHEN bm.BigMerchantID IS NOT NULL THEN 'BigMerchant'
+            END AS EntityType,
+            ISNULL(u.UserID, ISNULL(r.RoleID, ISNULL(sm.SmallMerchantID, bm.BigMerchantID))) AS EntityID,
+            ISNULL(u.UserName, ISNULL(r.RoleName, ISNULL(sm.ShopName, bm.CompanyName))) AS EntityName,
+            YEAR(l.TransactionDate) AS Year,
+            MONTH(l.TransactionDate) AS Month,
+            DATEPART(QUARTER, l.TransactionDate) AS Quarter,
+            SUM(CASE WHEN l.DebitCredit = 'Debit' THEN l.Amount ELSE 0 END) AS TotalDebits,
+            SUM(CASE WHEN l.DebitCredit = 'Credit' THEN l.Amount ELSE 0 END) AS TotalCredits,
+            SUM(l.Amount) AS NetAmount
+        FROM Ledger l
+        LEFT JOIN Payments p ON l.ReferenceID = p.PaymentID AND l.TransactionType = 'Payment'
+        LEFT JOIN Orders o ON p.OrderID = o.OrderID
+        LEFT JOIN Users u ON o.CustomerID = u.UserID
+        LEFT JOIN Roles r ON u.RoleID = r.RoleID
+        LEFT JOIN SmallMerchant sm ON o.SmallMerchantID = sm.SmallMerchantID
+        LEFT JOIN SmallMerchantProducts smp ON sm.SmallMerchantID = smp.SmallMerchantID
+        LEFT JOIN Products pr ON smp.ProductID = pr.ProductID
+        LEFT JOIN BigMerchant bm ON pr.BigMerchantID = bm.BigMerchantID
+        GROUP BY 
+            CASE 
+                WHEN u.UserID IS NOT NULL THEN 'User'
+                WHEN r.RoleID IS NOT NULL THEN 'Role'
+                WHEN sm.SmallMerchantID IS NOT NULL THEN 'SmallMerchant'
+                WHEN bm.BigMerchantID IS NOT NULL THEN 'BigMerchant'
+            END,
+            ISNULL(u.UserID, ISNULL(r.RoleID, ISNULL(sm.SmallMerchantID, bm.BigMerchantID))),
+            ISNULL(u.UserName, ISNULL(r.RoleName, ISNULL(sm.ShopName, bm.CompanyName))),
+            YEAR(l.TransactionDate),
+            MONTH(l.TransactionDate),
+            DATEPART(QUARTER, l.TransactionDate)
+    )
+    -- Monthly Report
+    SELECT 'Monthly' AS ReportType, EntityType, EntityID, EntityName, Year, Month,
+           SUM(TotalDebits) AS TotalDebits, SUM(TotalCredits) AS TotalCredits, SUM(NetAmount) AS NetAmount
+    FROM EntityLedger
+    GROUP BY EntityType, EntityID, EntityName, Year, Month
+
+    UNION ALL
+
+    -- Quarterly Report
+    SELECT 'Quarterly' AS ReportType, EntityType, EntityID, EntityName, Year, Quarter,
+           SUM(TotalDebits) AS TotalDebits, SUM(TotalCredits) AS TotalCredits, SUM(NetAmount) AS NetAmount
+    FROM EntityLedger
+    GROUP BY EntityType, EntityID, EntityName, Year, Quarter
+
+    UNION ALL
+
+    -- Yearly Report
+    SELECT 'Yearly' AS ReportType, EntityType, EntityID, EntityName, Year, NULL AS Quarter,
+           SUM(TotalDebits) AS TotalDebits, SUM(TotalCredits) AS TotalCredits, SUM(NetAmount) AS NetAmount
+    FROM EntityLedger
+    GROUP BY EntityType, EntityID, EntityName, Year
+
+    ORDER BY EntityType, EntityName, Year, ReportType;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAllMerchantsFinancialSummary]
+-- =============================================
+CREATE   PROCEDURE GetAllMerchantsFinancialSummary
+AS
+BEGIN
+    -- ملخص للتجار الصغار
+    SELECT 
+        'SmallMerchant' AS MerchantType,
+        sm.SmallMerchantID AS MerchantID,
+        sm.ShopName AS MerchantName,
+        COUNT(o.OrderID) AS TotalOrders,
+        SUM(o.TotalAmount) AS TotalOrderAmount,
+        SUM(p.Amount) AS TotalPayments
+    FROM SmallMerchant sm
+    INNER JOIN Orders o ON sm.SmallMerchantID = o.SmallMerchantID
+    INNER JOIN Payments p ON o.OrderID = p.OrderID
+    GROUP BY sm.SmallMerchantID, sm.ShopName
+
+    UNION ALL
+
+    -- ملخص للتجار الكبار
+    SELECT 
+        'BigMerchant' AS MerchantType,
+        bm.BigMerchantID AS MerchantID,
+        bm.CompanyName AS MerchantName,
+        COUNT(p.PaymentID) AS TotalPaymentsCount,
+        SUM(p.Amount) AS TotalPayments,
+        SUM(o.TotalAmount) AS TotalOrdersAmount
+    FROM BigMerchant bm
+    INNER JOIN Products pr ON bm.BigMerchantID = pr.BigMerchantID
+    INNER JOIN SmallMerchantProducts smp ON pr.ProductID = smp.ProductID
+    INNER JOIN Orders o ON smp.SmallMerchantID = o.SmallMerchantID
+    INNER JOIN Payments p ON o.OrderID = p.OrderID
+    GROUP BY bm.BigMerchantID, bm.CompanyName;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAllRolesLedgerSummary]
+-- =============================================
+CREATE   PROCEDURE GetAllRolesLedgerSummary
+AS
+BEGIN
+    SELECT 
+        r.RoleID,
+        r.RoleName,
+        YEAR(l.TransactionDate) AS Year,
+        DATEPART(QUARTER, l.TransactionDate) AS Quarter,
+        SUM(CASE WHEN l.DebitCredit = 'Debit' THEN l.Amount ELSE 0 END) AS TotalDebits,
+        SUM(CASE WHEN l.DebitCredit = 'Credit' THEN l.Amount ELSE 0 END) AS TotalCredits,
+        SUM(l.Amount) AS NetAmount
+    FROM Roles r
+    INNER JOIN Users u ON r.RoleID = u.RoleID
+    INNER JOIN Orders o ON u.UserID = o.CustomerID
+    INNER JOIN Payments p ON o.OrderID = p.OrderID
+    INNER JOIN Ledger l ON l.ReferenceID = p.PaymentID AND l.TransactionType = 'Payment'
+    GROUP BY r.RoleID, r.RoleName, YEAR(l.TransactionDate), DATEPART(QUARTER, l.TransactionDate)
+    ORDER BY r.RoleName, Year, Quarter;
+END;
+     
+GO
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAuditAndLedgerCombinedSummary]
+-- =============================================
+CREATE   PROCEDURE GetAuditAndLedgerCombinedSummary
+AS
+BEGIN
+    ;WITH LedgerData AS (
+        SELECT 
+            'Ledger' AS SourceType,
+            YEAR(TransactionDate) AS Year,
+            MONTH(TransactionDate) AS Month,
+            DATEPART(QUARTER, TransactionDate) AS Quarter,
+            SUM(CASE WHEN DebitCredit = 'Debit' THEN Amount ELSE 0 END) AS TotalDebits,
+            SUM(CASE WHEN DebitCredit = 'Credit' THEN Amount ELSE 0 END) AS TotalCredits,
+            SUM(Amount) AS NetAmount,
+            COUNT(LedgerID) AS TransactionCount
+        FROM Ledger
+        GROUP BY YEAR(TransactionDate), MONTH(TransactionDate), DATEPART(QUARTER, TransactionDate)
+    ),
+    AuditData AS (
+        SELECT 
+            'AuditLog' AS SourceType,
+            YEAR(ActionDate) AS Year,
+            MONTH(ActionDate) AS Month,
+            DATEPART(QUARTER, ActionDate) AS Quarter,
+            0 AS TotalDebits,
+            0 AS TotalCredits,
+            COUNT(LogID) AS NetAmount, -- عدد العمليات كـ NetAmount
+            COUNT(LogID) AS TransactionCount
+        FROM AuditLogs
+        GROUP BY YEAR(ActionDate), MONTH(ActionDate), DATEPART(QUARTER, ActionDate)
+    ),
+    Combined AS (
+        SELECT * FROM LedgerData
+        UNION ALL
+        SELECT * FROM AuditData
+    )
+    -- Monthly Report
+    SELECT 'Monthly' AS ReportType, SourceType, Year, Month, Quarter,
+           SUM(TotalDebits) AS TotalDebits,
+           SUM(TotalCredits) AS TotalCredits,
+           SUM(NetAmount) AS NetAmount,
+           SUM(TransactionCount) AS TransactionCount
+    FROM Combined
+    GROUP BY SourceType, Year, Month, Quarter
+
+    UNION ALL
+
+    -- Quarterly Report
+    SELECT 'Quarterly' AS ReportType, SourceType, Year, NULL AS Month, Quarter,
+           SUM(TotalDebits) AS TotalDebits,
+           SUM(TotalCredits) AS TotalCredits,
+           SUM(NetAmount) AS NetAmount,
+           SUM(TransactionCount) AS TransactionCount
+    FROM Combined
+    GROUP BY SourceType, Year, Quarter
+
+    UNION ALL
+
+    -- Yearly Report
+    SELECT 'Yearly' AS ReportType, SourceType, Year, NULL AS Month, NULL AS Quarter,
+           SUM(TotalDebits) AS TotalDebits,
+           SUM(TotalCredits) AS TotalCredits,
+           SUM(NetAmount) AS NetAmount,
+           SUM(TransactionCount) AS TransactionCount
+    FROM Combined
+    GROUP BY SourceType, Year
+
+    ORDER BY ReportType, SourceType, Year, Quarter, Month;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAuditLogSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetAuditLogSummary
+AS
+BEGIN
+    SELECT 
+        EntityName,
+        EntityID,
+        Action,
+        ActionBy,
+        YEAR(ActionDate) AS Year,
+        DATEPART(QUARTER, ActionDate) AS Quarter,
+        COUNT(LogID) AS ActionCount
+    FROM AuditLogs
+    GROUP BY EntityName, EntityID, Action, ActionBy, YEAR(ActionDate), DATEPART(QUARTER, ActionDate)
+    ORDER BY Year, Quarter, EntityName;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetAuditLogSummaryPivot]
+-- =============================================
+
+
+CREATE   PROCEDURE GetAuditLogSummaryPivot
+AS
+BEGIN
+    ;WITH AuditData AS (
+        SELECT 
+            EntityName,
+            EntityID,
+            Action,
+            ActionBy,
+            YEAR(ActionDate) AS Year,
+            MONTH(ActionDate) AS Month,
+            DATEPART(QUARTER, ActionDate) AS Quarter,
+            COUNT(LogID) AS ActionCount
+        FROM AuditLogs
+        GROUP BY EntityName, EntityID, Action, ActionBy, YEAR(ActionDate), MONTH(ActionDate), DATEPART(QUARTER, ActionDate)
+    )
+    -- Monthly Report
+    SELECT 'Monthly' AS ReportType, EntityName, EntityID, Action, ActionBy, Year, Month,
+           SUM(ActionCount) AS TotalActions
+    FROM AuditData
+    GROUP BY EntityName, EntityID, Action, ActionBy, Year, Month
+
+    UNION ALL
+
+    -- Quarterly Report
+    SELECT 'Quarterly' AS ReportType, EntityName, EntityID, Action, ActionBy, Year, Quarter,
+           SUM(ActionCount) AS TotalActions
+    FROM AuditData
+    GROUP BY EntityName, EntityID, Action, ActionBy, Year, Quarter
+
+    UNION ALL
+
+    -- Yearly Report
+    SELECT 'Yearly' AS ReportType, EntityName, EntityID, Action, ActionBy, Year, NULL AS Quarter,
+           SUM(ActionCount) AS TotalActions
+    FROM AuditData
+    GROUP BY EntityName, EntityID, Action, ActionBy, Year
+
+    ORDER BY EntityName, Year, ReportType;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetAvailabilitySummary]
 -- =============================================
-
-
-
-
 
 CREATE PROCEDURE GetAvailabilitySummary
 AS
@@ -731,6 +870,7 @@ BEGIN
     GROUP BY AT.SystemName;
 END;
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[GetAvailabilityTrendKPIs]
@@ -774,7 +914,6 @@ BEGIN
     ORDER BY AT.SystemName, Month DESC;
 END;
 GO
-
 -- =============================================
 -- Stored Procedure: [dbo].[GetCapacitySummary]
 -- =============================================
@@ -829,15 +968,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetConfigKPIs]
 -- =============================================
-
-
-
-
-
-
 
 CREATE PROCEDURE GetConfigKPIs
 AS
@@ -873,15 +1007,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetConfigSummary]
 -- =============================================
-
-
-
-
-
-
 
 CREATE PROCEDURE GetConfigSummary
 AS
@@ -908,6 +1037,7 @@ BEGIN
     GROUP BY Owner;
 END;
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[GetContinuitySummary]
@@ -966,34 +1096,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetCustomerSegmentationAnalytics]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
 
 CREATE PROCEDURE GetCustomerSegmentationAnalytics
     @Gender NVARCHAR(10) = NULL,   -- Male / Female
@@ -1035,34 +1141,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetCustomerSegmentationAnalyticsWithStats]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
 
 CREATE PROCEDURE GetCustomerSegmentationAnalyticsWithStats
     @Gender NVARCHAR(10) = NULL,   -- Male / Female
@@ -1150,6 +1232,7 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetDailyReports]
 -- =============================================
@@ -1163,38 +1246,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetDynamicCustomerSegmentationReport]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
-
-
-
-
 
   CREATE PROCEDURE GetDynamicCustomerSegmentationReport
 AS
@@ -1236,38 +1291,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetDynamicCustomerSegmentationWithStats]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
-
-
-
-
 
 CREATE PROCEDURE GetDynamicCustomerSegmentationWithStats
 AS
@@ -1330,28 +1357,69 @@ BEGIN
 END;
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetFinancialSummary]
+-- =============================================
+CREATE   PROCEDURE GetFinancialSummary
+    @EntityType NVARCHAR(50), -- 'SmallMerchant' أو 'BigMerchant' أو 'Role'
+    @EntityID INT
+AS
+BEGIN
+    IF @EntityType = 'SmallMerchant'
+    BEGIN
+        SELECT 
+            sm.SmallMerchantID,
+            sm.ShopName,
+            COUNT(o.OrderID) AS TotalOrders,
+            SUM(o.TotalAmount) AS TotalOrderAmount,
+            SUM(p.Amount) AS TotalPayments
+        FROM SmallMerchant sm
+        INNER JOIN Orders o ON sm.SmallMerchantID = o.SmallMerchantID
+        INNER JOIN Payments p ON o.OrderID = p.OrderID
+        WHERE sm.SmallMerchantID = @EntityID
+        GROUP BY sm.SmallMerchantID, sm.ShopName;
+    END
+
+    ELSE IF @EntityType = 'BigMerchant'
+    BEGIN
+        SELECT 
+            bm.BigMerchantID,
+            bm.CompanyName,
+            COUNT(p.PaymentID) AS TotalPaymentsCount,
+            SUM(p.Amount) AS TotalPayments,
+            SUM(o.TotalAmount) AS TotalOrdersAmount
+        FROM BigMerchant bm
+        INNER JOIN Products pr ON bm.BigMerchantID = pr.BigMerchantID
+        INNER JOIN SmallMerchantProducts smp ON pr.ProductID = smp.ProductID
+        INNER JOIN Orders o ON smp.SmallMerchantID = o.SmallMerchantID
+        INNER JOIN Payments p ON o.OrderID = p.OrderID
+        WHERE bm.BigMerchantID = @EntityID
+        GROUP BY bm.BigMerchantID, bm.CompanyName;
+    END
+
+    ELSE IF @EntityType = 'Role'
+    BEGIN
+        SELECT 
+            r.RoleID,
+            r.RoleName,
+            COUNT(o.OrderID) AS TotalOrders,
+            SUM(o.TotalAmount) AS TotalOrderAmount,
+            SUM(p.Amount) AS TotalPayments
+        FROM Roles r
+        INNER JOIN Users u ON r.RoleID = u.RoleID
+        INNER JOIN Orders o ON u.UserID = o.CustomerID
+        INNER JOIN Payments p ON o.OrderID = p.OrderID
+        WHERE r.RoleID = @EntityID
+        GROUP BY r.RoleID, r.RoleName;
+    END
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetForecastAccuracyReport]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
 
    CREATE PROCEDURE GetForecastAccuracyReport
 AS
@@ -1378,27 +1446,52 @@ END;
    
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetInvoiceFinancialSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetInvoiceFinancialSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(i.IssueDate) AS Year,
+        MONTH(i.IssueDate) AS Month,
+        SUM(i.Amount) AS TotalInvoiceAmount,
+        COUNT(i.InvoiceID) AS InvoiceCount
+    FROM Invoices i
+    GROUP BY YEAR(i.IssueDate), MONTH(i.IssueDate)
+    ORDER BY Year, Month;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetLedgerFinancialSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetLedgerFinancialSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(TransactionDate) AS Year,
+        MONTH(TransactionDate) AS Month,
+        SUM(CASE WHEN DebitCredit = 'Debit' THEN Amount ELSE 0 END) AS TotalDebits,
+        SUM(CASE WHEN DebitCredit = 'Credit' THEN Amount ELSE 0 END) AS TotalCredits,
+        SUM(Amount) AS NetAmount
+    FROM Ledger
+    GROUP BY YEAR(TransactionDate), MONTH(TransactionDate)
+    ORDER BY Year, Month;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetLoginAnalytics]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
    
    CREATE PROCEDURE GetLoginAnalytics
 AS
@@ -1429,6 +1522,73 @@ BEGIN
 END;
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetMerchantFinancialSummary]
+-- =============================================
+CREATE   PROCEDURE GetMerchantFinancialSummary
+    @MerchantType NVARCHAR(50), -- 'Small' أو 'Big'
+    @MerchantID INT
+AS
+BEGIN
+    IF @MerchantType = 'Small'
+    BEGIN
+        SELECT 
+            sm.SmallMerchantID,
+            sm.ShopName,
+            COUNT(o.OrderID) AS TotalOrders,
+            SUM(o.TotalAmount) AS TotalOrderAmount,
+            SUM(p.Amount) AS TotalPayments
+        FROM SmallMerchant sm
+        INNER JOIN Orders o ON sm.SmallMerchantID = o.SmallMerchantID
+        INNER JOIN Payments p ON o.OrderID = p.OrderID
+        WHERE sm.SmallMerchantID = @MerchantID
+        GROUP BY sm.SmallMerchantID, sm.ShopName;
+    END
+
+    ELSE IF @MerchantType = 'Big'
+    BEGIN
+        SELECT 
+            bm.BigMerchantID,
+            bm.CompanyName,
+            COUNT(p.PaymentID) AS TotalPaymentsCount,
+            SUM(p.Amount) AS TotalPayments,
+            SUM(o.TotalAmount) AS TotalOrdersAmount
+        FROM BigMerchant bm
+        INNER JOIN Products pr ON bm.BigMerchantID = pr.BigMerchantID
+        INNER JOIN SmallMerchantProducts smp ON pr.ProductID = smp.ProductID
+        INNER JOIN Orders o ON smp.SmallMerchantID = o.SmallMerchantID
+        INNER JOIN Payments p ON o.OrderID = p.OrderID
+        WHERE bm.BigMerchantID = @MerchantID
+        GROUP BY bm.BigMerchantID, bm.CompanyName;
+    END
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetMonthlyFinancialSummary]
+-- =============================================
+
+
+
+CREATE   PROCEDURE GetMonthlyFinancialSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(p.PaymentDate) AS Year,
+        MONTH(p.PaymentDate) AS Month,
+        SUM(p.Amount) AS TotalPayments,
+        COUNT(p.PaymentID) AS PaymentCount,
+        SUM(o.TotalAmount) AS TotalOrders
+    FROM Payments p
+    INNER JOIN Orders o ON p.OrderID = o.OrderID
+    GROUP BY YEAR(p.PaymentDate), MONTH(p.PaymentDate)
+    ORDER BY Year, Month;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetMonthlyReports]
 -- =============================================
@@ -1442,30 +1602,11 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetMonthlySalesForecastReport]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
    CREATE PROCEDURE GetMonthlySalesForecastReport
 AS
 BEGIN
@@ -1513,28 +1654,11 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetPeakLoginTimesAndDevices]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-   
 CREATE PROCEDURE GetPeakLoginTimesAndDevices
 AS
 BEGIN
@@ -1555,6 +1679,7 @@ BEGIN
     ORDER BY DeviceCount DESC;
 END;
 GO
+
 
 -- =============================================
 -- Stored Procedure: [dbo].[GetProblemSummary]
@@ -1596,6 +1721,46 @@ BEGIN
 END;
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetQuarterlyLedgerSummary]
+-- =============================================
+CREATE   PROCEDURE GetQuarterlyLedgerSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(TransactionDate) AS Year,
+        DATEPART(QUARTER, TransactionDate) AS Quarter,
+        SUM(CASE WHEN DebitCredit = 'Debit' THEN Amount ELSE 0 END) AS TotalDebits,
+        SUM(CASE WHEN DebitCredit = 'Credit' THEN Amount ELSE 0 END) AS TotalCredits,
+        SUM(Amount) AS NetAmount
+    FROM Ledger
+    GROUP BY YEAR(TransactionDate), DATEPART(QUARTER, TransactionDate)
+    ORDER BY Year, Quarter;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetRefundFinancialSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetRefundFinancialSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(r.RefundDate) AS Year,
+        MONTH(r.RefundDate) AS Month,
+        SUM(r.RefundAmount) AS TotalRefunds,
+        COUNT(r.RefundID) AS RefundCount
+    FROM Refunds r
+    GROUP BY YEAR(r.RefundDate), MONTH(r.RefundDate)
+    ORDER BY Year, Month;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetReleaseKPIs]
 -- =============================================
@@ -1632,16 +1797,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetReleaseSummary]
 -- =============================================
-
-
-
-
-
-
-
 
 CREATE PROCEDURE GetReleaseSummary
 AS
@@ -1675,27 +1834,86 @@ END;
 
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetRoleLedgerSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetRoleLedgerSummary
+    @RoleID INT
+AS
+BEGIN
+    SELECT 
+        r.RoleID,
+        r.RoleName,
+        YEAR(l.TransactionDate) AS Year,
+        DATEPART(QUARTER, l.TransactionDate) AS Quarter,
+        SUM(CASE WHEN l.DebitCredit = 'Debit' THEN l.Amount ELSE 0 END) AS TotalDebits,
+        SUM(CASE WHEN l.DebitCredit = 'Credit' THEN l.Amount ELSE 0 END) AS TotalCredits,
+        SUM(l.Amount) AS NetAmount
+    FROM Roles r
+    INNER JOIN Users u ON r.RoleID = u.RoleID
+    INNER JOIN Orders o ON u.UserID = o.CustomerID
+    INNER JOIN Payments p ON o.OrderID = p.OrderID
+    INNER JOIN Ledger l ON l.ReferenceID = p.PaymentID AND l.TransactionType = 'Payment'
+    WHERE r.RoleID = @RoleID
+    GROUP BY r.RoleID, r.RoleName, YEAR(l.TransactionDate), DATEPART(QUARTER, l.TransactionDate)
+    ORDER BY Year, Quarter;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetTaxFinancialSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetTaxFinancialSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(o.CreatedAt) AS Year,
+        MONTH(o.CreatedAt) AS Month,
+        SUM(t.TaxAmount) AS TotalTaxes,
+        AVG(t.TaxRate) AS AvgTaxRate
+    FROM Taxes t
+    INNER JOIN Orders o ON t.OrderID = o.OrderID
+    GROUP BY YEAR(o.CreatedAt), MONTH(o.CreatedAt)
+    ORDER BY Year, Month;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetUserFinancialSummary]
+-- =============================================
+
+
+
+CREATE   PROCEDURE GetUserFinancialSummary
+    @UserID INT
+AS
+BEGIN
+    SELECT 
+        u.UserID,
+        u.UserName,
+        COUNT(o.OrderID) AS TotalOrders,
+        SUM(o.TotalAmount) AS TotalOrderAmount,
+        SUM(p.Amount) AS TotalPayments
+    FROM Users u
+    LEFT JOIN Orders o ON u.UserID = o.CustomerID
+    LEFT JOIN Payments p ON o.OrderID = p.OrderID
+    WHERE u.UserID = @UserID
+    GROUP BY u.UserID, u.UserName;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetUsersByRole]
 -- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
 CREATE PROCEDURE GetUsersByRole
     @RoleName NVARCHAR(100)
 AS
@@ -1714,26 +1932,10 @@ END;
 
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetUsersByStatus]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
    
 CREATE PROCEDURE GetUsersByStatus
     @Status NVARCHAR(50)
@@ -1753,21 +1955,10 @@ END;
 
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetUserSummary]
 -- =============================================
-
-/*
-
-CREATE VIEW UserSummary AS
-SELECT 
-    u.UserID,
-    u.UserName,
-    MAX(al.LoginTime) AS LastLoginDate
-FROM Users u
-LEFT JOIN AuthenticationLogs al ON u.UserID = al.UserID
-GROUP BY u.UserID, u.UserName;
-*/
 
 CREATE PROCEDURE GetUserSummary
     @UserID INT
@@ -1777,27 +1968,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetUserWithRole]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
 
 CREATE PROCEDURE GetUserWithRole
     @UserID INT
@@ -1817,31 +1991,50 @@ BEGIN
 END;
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetYearlyFinancialSummary]
+-- =============================================
+
+CREATE   PROCEDURE GetYearlyFinancialSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(p.PaymentDate) AS Year,
+        SUM(p.Amount) AS TotalPayments,
+        COUNT(p.PaymentID) AS PaymentCount,
+        SUM(o.TotalAmount) AS TotalOrders
+    FROM Payments p
+    INNER JOIN Orders o ON p.OrderID = o.OrderID
+    GROUP BY YEAR(p.PaymentDate)
+    ORDER BY Year;
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[GetYearlyLedgerSummary]
+-- =============================================
+
+
+CREATE   PROCEDURE GetYearlyLedgerSummary
+AS
+BEGIN
+    SELECT 
+        YEAR(TransactionDate) AS Year,
+        SUM(CASE WHEN DebitCredit = 'Debit' THEN Amount ELSE 0 END) AS TotalDebits,
+        SUM(CASE WHEN DebitCredit = 'Credit' THEN Amount ELSE 0 END) AS TotalCredits,
+        SUM(Amount) AS NetAmount
+    FROM Ledger
+    GROUP BY YEAR(TransactionDate)
+    ORDER BY Year;
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[GetYearlySalesForecastReport]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
   
 CREATE PROCEDURE GetYearlySalesForecastReport
 AS
@@ -1889,18 +2082,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[HandleCashOnDelivery]
 -- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-
 
 CREATE PROCEDURE HandleCashOnDelivery
     @PaymentID INT,
@@ -1913,14 +2098,105 @@ BEGIN
 END;
 GO
 
+
+-- =============================================
+-- Stored Procedure: [dbo].[Insert_Order]
+-- =============================================
+CREATE   PROCEDURE Insert_Order
+    @CustomerID INT,
+    @SmallMerchantID INT = NULL,
+    @Status NVARCHAR(50) = 'Pending',
+    @PaymentStatus NVARCHAR(50) = 'Unpaid',
+    @TotalAmount DECIMAL(18,2)
+AS
+BEGIN
+    INSERT INTO Orders (CustomerID, SmallMerchantID, Status, PaymentStatus, TotalAmount, CreatedAt)
+    VALUES (@CustomerID, @SmallMerchantID, @Status, @PaymentStatus, @TotalAmount, GETDATE());
+END;
+
+GO
+
+-- =============================================
+-- Stored Procedure: [dbo].[Insert_Payment]
+-- =============================================
+CREATE   PROCEDURE Insert_Payment
+    @OrderID INT,
+    @MerchantType NVARCHAR(50),
+    @MerchantID INT,
+    @Amount DECIMAL(18,2),
+    @Status NVARCHAR(50) = 'Pending'
+AS
+BEGIN
+    INSERT INTO Payments (OrderID, MerchantType, MerchantID, Amount, Status, PaymentDate, CreatedAt)
+    VALUES (@OrderID, @MerchantType, @MerchantID, @Amount, @Status, GETDATE(), GETDATE());
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[Insert_User]
+-- =============================================
+
+
+CREATE   PROCEDURE Insert_User
+    @UserName NVARCHAR(150),
+    @Email NVARCHAR(200),
+    @PasswordHash NVARCHAR(200),
+    @Status NVARCHAR(50) = 'Active',
+    @Notes NVARCHAR(250) = NULL,
+    @RoleID INT = NULL,
+    @Gender NVARCHAR(20) = NULL,
+    @Age INT = NULL,
+    @Region NVARCHAR(100) = NULL
+AS
+BEGIN
+    INSERT INTO Users (UserName, Email, PasswordHash, Status, Notes, RoleID, Gender, Age, Region, CreatedAt)
+    VALUES (@UserName, @Email, @PasswordHash, @Status, @Notes, @RoleID, @Gender, @Age, @Region, GETDATE());
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[Insert_Users]
+-- =============================================
+CREATE   PROCEDURE Insert_Users
+    @UserName NVARCHAR(150),
+    @Email NVARCHAR(200),
+    @PasswordHash NVARCHAR(200),
+    @Status NVARCHAR(50) = 'Active',
+    @Notes NVARCHAR(250) = NULL,
+    @RoleID INT = NULL,
+    @Gender NVARCHAR(20) = NULL,
+    @Age INT = NULL,
+    @Region NVARCHAR(100) = NULL
+AS
+BEGIN
+    INSERT INTO Users (UserName, Email, PasswordHash, Status, Notes, RoleID, Gender, Age, Region, CreatedAt)
+    VALUES (@UserName, @Email, @PasswordHash, @Status, @Notes, @RoleID, @Gender, @Age, @Region, GETDATE());
+END;
+GO
+
+
+-- =============================================
+-- Stored Procedure: [dbo].[InsertAuditLog]
+-- =============================================
+CREATE   PROCEDURE InsertAuditLog
+    @EntityName NVARCHAR(100),
+    @EntityID INT,
+    @Action NVARCHAR(50),
+    @ActionBy NVARCHAR(150),
+    @Notes NVARCHAR(250) = NULL
+AS
+BEGIN
+    INSERT INTO AuditLogs (EntityName, EntityID, Action, ActionBy, ActionDate, Notes)
+    VALUES (@EntityName, @EntityID, @Action, @ActionBy, GETDATE(), @Notes);
+END;
+GO
+
+
 -- =============================================
 -- Stored Procedure: [dbo].[LogDowntime]
 -- =============================================
-
-
-
-
-
 CREATE PROCEDURE LogDowntime
     @TargetID INT,
     @DowntimeMinutes INT,
@@ -1939,12 +2215,10 @@ BEGIN
 END;
 GO
 
+
 -- =============================================
 -- Stored Procedure: [dbo].[MonitorCapacity]
 -- =============================================
-
-
-
 CREATE PROCEDURE MonitorCapacity
     @TargetID INT,
     @ActualUsage DECIMAL(10,2),
@@ -1971,478 +2245,6 @@ BEGIN
 END;
 GO
 
--- =============================================
--- Stored Procedure: [dbo].[OpenTicket]
--- =============================================
 
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
 
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
-
-  CREATE PROCEDURE OpenTicket
-    @Title NVARCHAR(200),
-    @Description NVARCHAR(500),
-    @CategoryID INT,
-    @OpenedBy INT
-AS
-BEGIN
-    INSERT INTO SupportTickets (Title, Description, CategoryID, OpenedBy)
-    VALUES (@Title, @Description, @CategoryID, @OpenedBy);
-END;
-
- 
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[RegisterPayment]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-
-CREATE PROCEDURE RegisterPayment
-    @OrderID INT,
-    @Method NVARCHAR(50),
-    @Amount DECIMAL(10,2)
-AS
-BEGIN
-    INSERT INTO Payments (OrderID, Method, Amount)
-    VALUES (@OrderID, @Method, @Amount);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[RemoveRoleFromUser]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-CREATE PROCEDURE RemoveRoleFromUser
-    @UserID INT,
-    @RoleID INT
-AS
-BEGIN
-    DELETE FROM UsersRoles
-    WHERE UserID = @UserID AND RoleID = @RoleID;
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[ResolveProblem]
--- =============================================
-
-
-CREATE PROCEDURE ResolveProblem
-    @ProblemID INT,
-    @ActionTaken NVARCHAR(250),
-    @ActionBy INT
-AS
-BEGIN
-    UPDATE ProblemCatalog
-    SET Status = 'Resolved'
-    WHERE ProblemID = @ProblemID;
-
-    INSERT INTO ProblemRecords (ProblemID, ActionTaken, ActionBy)
-    VALUES (@ProblemID, @ActionTaken, @ActionBy);
-
-    INSERT INTO ProblemLogs (ProblemID, LogDescription, LoggedBy)
-    VALUES (@ProblemID, 'Problem resolved: ' + @ActionTaken, @ActionBy);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[SubmitChangeRequest]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
-
- 
- CREATE PROCEDURE SubmitChangeRequest
-    @Title NVARCHAR(200),
-    @Description NVARCHAR(500),
-    @Priority NVARCHAR(20),
-    @RequestedBy INT
-AS
-BEGIN
-    INSERT INTO ChangeRequests (Title, Description, Priority, RequestedBy)
-    VALUES (@Title, @Description, @Priority, @RequestedBy);
-END;
-
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[TestContinuityPlan]
--- =============================================
-
-
-CREATE PROCEDURE TestContinuityPlan
-    @PlanID INT,
-    @Scenario NVARCHAR(100),
-    @TestedBy NVARCHAR(150)
-AS
-BEGIN
-    INSERT INTO ContinuityTests (PlanID, Scenario, TestedBy)
-    VALUES (@PlanID, @Scenario, @TestedBy);
-
-    INSERT INTO ContinuityLogs (PlanID, Action, ActionBy)
-    VALUES (@PlanID, 'Continuity plan tested with scenario: ' + @Scenario, @TestedBy);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateAvailabilityStatus]
--- =============================================
-
-
-
-
-
-CREATE PROCEDURE UpdateAvailabilityStatus
-    @RecordID INT,
-    @Status NVARCHAR(50),
-    @DowntimeMinutes INT
-AS
-BEGIN
-    UPDATE AvailabilityRecords
-    SET Status = @Status,
-        DowntimeMinutes = @DowntimeMinutes,
-        ActualUptime = 100 - (@DowntimeMinutes * 100.0 / (30*24*60))
-    WHERE RecordID = @RecordID;
-
-    INSERT INTO AvailabilityLogs (RecordID, IncidentDescription, LoggedBy)
-    VALUES (@RecordID, 'Availability status updated to ' + @Status, 0);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateCapacity]
--- =============================================
-
-
-
-CREATE PROCEDURE UpdateCapacity
-    @RecordID INT,
-    @ActualUsage DECIMAL(10,2),
-    @Status NVARCHAR(50),
-    @ActionBy INT
-AS
-BEGIN
-    UPDATE CapacityRecords
-    SET ActualUsage = @ActualUsage,
-        Status = @Status
-    WHERE RecordID = @RecordID;
-
-    INSERT INTO CapacityLogs (RecordID, Action, ActionBy)
-    VALUES (@RecordID, 'Capacity updated to ' + CAST(@ActualUsage AS NVARCHAR), @ActionBy);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateConfigItem]
--- =============================================
-
-
-
-
-CREATE PROCEDURE UpdateConfigItem
-    @ConfigID INT,
-    @Status NVARCHAR(50),
-    @ChangeDescription NVARCHAR(500),
-    @ChangedBy INT
-AS
-BEGIN
-    UPDATE ConfigItems
-    SET Status = @Status
-    WHERE ConfigID = @ConfigID;
-
-    INSERT INTO ConfigChanges (ConfigID, ChangeDescription, ChangedBy)
-    VALUES (@ConfigID, @ChangeDescription, @ChangedBy);
-
-    INSERT INTO ConfigLogs (ConfigID, Action, ActionBy)
-    VALUES (@ConfigID, 'Config item updated: ' + @ChangeDescription, @ChangedBy);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateContinuityPlan]
--- =============================================
-
-
-CREATE PROCEDURE UpdateContinuityPlan
-    @PlanID INT,
-    @Status NVARCHAR(50),
-    @ActionBy NVARCHAR(150)
-AS
-BEGIN
-    UPDATE ContinuityPlans
-    SET Status = @Status
-    WHERE PlanID = @PlanID;
-
-    INSERT INTO ContinuityLogs (PlanID, Action, ActionBy)
-    VALUES (@PlanID, 'Continuity plan status updated to ' + @Status, @ActionBy);
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateIncidentStatus]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE DeleteUser;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-   
-   
-  
-
-   
-  
-  
-
-
-
-  CREATE PROCEDURE UpdateIncidentStatus
-    @IncidentID INT,
-    @Status NVARCHAR(50),
-    @AssignedTo INT = NULL
-AS
-BEGIN
-    UPDATE IncidentReports
-    SET Status = @Status,
-        AssignedTo = @AssignedTo,
-        ResolvedAt = CASE WHEN @Status = 'Resolved' THEN GETDATE() ELSE ResolvedAt END
-    WHERE IncidentID = @IncidentID;
-
-    INSERT INTO IncidentLogs (IncidentID, Action, ActionBy)
-    VALUES (@IncidentID, 'Status updated to ' + @Status, @AssignedTo);
-END;
-
-
-  
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateOrderStatus]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-
-
-
-CREATE PROCEDURE UpdateOrderStatus
-    @OrderID INT,
-    @NewStatus NVARCHAR(50)
-AS
-BEGIN
-    UPDATE Orders
-    SET Status = @NewStatus
-    WHERE OrderID = @OrderID;
-END;
-
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateProduct]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-
-
-CREATE PROCEDURE UpdateProduct
-    @ProductID INT,
-    @ProductName NVARCHAR(200),
-    @Description NVARCHAR(MAX),
-    @Price DECIMAL(10,2),
-    @StockQuantity INT
-AS
-BEGIN
-    UPDATE Products
-    SET ProductName = @ProductName,
-        Description = @Description,
-        Price = @Price,
-        StockQuantity = @StockQuantity,
-        UpdatedAt = GETDATE()
-    WHERE ProductID = @ProductID;
-END;
-
-
-
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateUser]
--- =============================================
-
-/*
-SELECT COLUMN_NAME
-FROM INFORMATION_SCHEMA.COLUMNS
-WHERE TABLE_NAME = 'UsersData';
-*/
-
-/*
-ALTER TABLE Products
-ADD 
-
-DROP PROCEDURE AddProduct;
-
-CONSTRAINT FK_Products_BigMerchants FOREIGN KEY (BigMerchantID)
-        REFERENCES BigMerchants(BigMerchantID);*/
-
-    CREATE PROCEDURE UpdateUser
-    @UserID INT,
-    @UserName NVARCHAR(100),
-    @Email NVARCHAR(200),
-    @Notes NVARCHAR(MAX) = NULL
-AS
-BEGIN
-    UPDATE Users
-    SET UserName = @UserName,
-        Email = @Email,
-        Notes = @Notes,
-        CreatedAT = CreatedAT -- يفضل عدم تغييره
-    WHERE UserID = @UserID;
-END;
-
-   
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UpdateUserPassword]
--- =============================================
-
-
-
-CREATE PROCEDURE UpdateUserPassword
-    @UserID INT,
-    @NewPasswordHash NVARCHAR(200)
-AS
-BEGIN
-    UPDATE Users
-    SET PasswordHash = @NewPasswordHash
-    WHERE UserID = @UserID;
-END;
-GO
-
--- =============================================
--- Stored Procedure: [dbo].[UserLogin]
--- =============================================
-
-/*
-
-CREATE VIEW UserSummary AS
-SELECT 
-    u.UserID,
-    u.UserName,
-    MAX(al.LoginTime) AS LastLoginDate
-FROM Users u
-LEFT JOIN AuthenticationLogs al ON u.UserID = al.UserID
-GROUP BY u.UserID, u.UserName;
-*/
-
-CREATE PROCEDURE UserLogin
-    @Email NVARCHAR(200),
-    @PasswordHash NVARCHAR(200),
-    @IPAddress NVARCHAR(50)
-AS
-BEGIN
-    DECLARE @UserID INT;
-
-    SELECT @UserID = UserID
-    FROM Users
-    WHERE Email = @Email AND PasswordHash = @PasswordHash;
-
-    IF @UserID IS NOT NULL
-    BEGIN
-        INSERT INTO AuthenticationLogs (UserID, IsSuccessful, IPAddress)
-        VALUES (@UserID, 1, @IPAddress);
-
-        SELECT * FROM UserSummary WHERE UserID = @UserID;
-    END
-    ELSE
-    BEGIN
-        INSERT INTO AuthenticationLogs (UserID, IsSuccessful, IPAddress)
-        VALUES (0, 0, @IPAddress); -- 0 لو المستخدم مش موجود
-
-        SELECT 'Login Failed' AS Message;
-    END
-END;
-GO
-
-
-Completion time: 2026-08-25T19:14:25.3039504+03:00
+Completion time: 2026-08-25T22:58:37.8171114+03:00
